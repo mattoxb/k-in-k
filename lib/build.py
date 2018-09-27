@@ -91,3 +91,26 @@ out = proj.build( inputs  = bar_kast
                 )
 test = foobar_k5.check_actual_expected('foobar/programs/bar.foobar.handwritten', out, 'foobar/programs/bar.foobar.expected')
 proj.default(test)
+
+# Buliding the eKore transformations
+# ----------------------------------
+
+ekore_def  = proj.kdefinition( 'ekore'
+                             , main = proj.tangle('ekore.md', proj.tangleddir('ekore/ekore.k'))
+                             , backend = 'java'
+                             , alias = 'ekore'
+                             , kompile_flags = '-I . --syntax-module EKORE-SYNTAX'
+                             )
+
+# Imp parsing using outer kore
+# ----------------------------
+
+parsed_imp = ekore_def.krun( output = proj.builddir('imp/imp.ekore-1.out')
+                           , input = 'imp/imp.ekore-1'
+                           )
+proj.build( inputs = parsed_imp
+          , rule = 'phony'
+          , outputs = proj.builddir('imp/imp.ekore-1.parses')
+          )
+
+proj.default(proj.builddir('imp/imp.ekore-1.parses'))
