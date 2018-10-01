@@ -60,12 +60,12 @@ class KProject(ninja.ninja_syntax.Writer):
         self.build(output, 'tangle', input, implicit = [ '$tangle_repository/.git' ])
         return output
 
-    def kdefinition(self, name, main, backend, alias, kompile_flags = None):
+    def kdefinition(self, name, main, backend, alias, implicit = None, kompile_flags = None):
         kdef = self.kdefinition_no_build( name
                                         , kompiled_dirname = basename_no_ext(main) + '-kompiled'
                                         , alias = alias
                                         )
-        kdef.kompile(main, backend = backend, kompile_flags = kompile_flags)
+        kdef.kompile(main, backend = backend, implicit = implicit, kompile_flags = kompile_flags)
         kdef.write_alias(alias)
         return kdef
 
@@ -90,10 +90,11 @@ class KDefinition:
         # in when using the OCaml interpreter.
         self.writer.build(alias, 'phony', self.get_timestamp_file())
 
-    def kompile(self, main, backend = 'java', kompile_flags = None):
+    def kompile(self, main, backend = 'java', implicit = None, kompile_flags = None):
         self.writer.build( self.get_timestamp_file()
                          , 'kompile'
                          , main
+                         , implicit = implicit
                          , variables = { 'backend' : backend
                                        , 'flags' : kompile_flags
                                        }

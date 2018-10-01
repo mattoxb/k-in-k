@@ -97,6 +97,7 @@ proj.default(test)
 
 ekore_def  = proj.kdefinition( 'ekore'
                              , main = proj.tangle('ekore.md', proj.tangleddir('ekore/ekore.k'))
+                             , implicit = [ 'outer-k.k' ]
                              , backend = 'java'
                              , alias = 'ekore'
                              , kompile_flags = '-I . --syntax-module EKORE-SYNTAX'
@@ -105,12 +106,12 @@ ekore_def  = proj.kdefinition( 'ekore'
 # Imp parsing using outer kore
 # ----------------------------
 
-parsed_imp = ekore_def.krun( output = proj.builddir('imp/imp.ekore-1.out')
-                           , input = 'imp/imp.ekore-1'
+parsed_imp = ekore_def.krun( output = proj.builddir('imp/imp.ekoreMinus1.out')
+                           , input = 'imp/imp.ekoreMinus1'
                            )
 proj.build( inputs = parsed_imp
           , rule = 'phony'
-          , outputs = proj.builddir('imp/imp.ekore-1.parses')
+          , outputs = proj.builddir('imp/imp.ekoreMinus1.parses')
           )
 
-proj.default(proj.builddir('imp/imp.ekore-1.parses'))
+proj.default(proj.builddir('imp/imp.ekoreMinus1.parses'))
