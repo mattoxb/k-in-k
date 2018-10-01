@@ -15,7 +15,7 @@ endmodule
 
 module EKORE
   imports EKORE-SYNTAX
-  configuration <k> $PGM </k>
+  configuration <k> $PGM:Bubble </k>
 endmodule
 ```
 
