@@ -3,6 +3,7 @@
 // // This grammar is supposed to accept as input a full K definition
 // // which includes modules, syntax declarations and rules as bubbles.
 //
+```{.k, .k-light}
 module BUBBLE
 
   syntax Bubble ::= Bubble BubbleItem // [token]
@@ -127,3 +128,4 @@ module OUTER-K
 // syntax Layout ::= r"(/\\*([^\\*]|(\\*+([^\\*/])))*\\*+/|//[^\n\r]*|[\\ \n\r\t])*"
 //
 endmodule
+```
