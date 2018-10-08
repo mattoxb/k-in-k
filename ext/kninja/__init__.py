@@ -56,8 +56,9 @@ class KProject(ninja.ninja_syntax.Writer):
         self.include(self.kninjadir('build-ocaml.ninja'))
         self.default('ocaml-deps')
 
-    def tangle(self, input, output):
-        self.build(output, 'tangle', input, implicit = [ '$tangle_repository/.git' ])
+    def tangle(self, input, output, variables = None):
+        self.build(output, 'tangle', input, implicit = [
+            '$tangle_repository/.git' ], variables = variables)
         return output
 
     def kdefinition(self, name, main, backend, alias, implicit = None, kompile_flags = None):

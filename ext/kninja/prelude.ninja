@@ -13,7 +13,7 @@ tangle_selector = .k
 rule tangle
     description = Tangling $in
     command     = LUA_PATH=$tangle_repository/?.lua    $
-                  pandoc $in -o $out --metadata=code:$tangle_selector --to "$tangle_repository/tangle.lua"
+                  pandoc $in -o $out "--metadata=code:$tangle_selector" --to "$tangle_repository/tangle.lua"
 
 # Initializing submodules
 # -----------------------
