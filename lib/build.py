@@ -95,13 +95,35 @@ proj.default(test)
 # Buliding the eKore transformations
 # ----------------------------------
 
+proj.tangle( input = 'outer-k.md'
+           , output = proj.tangleddir('outer-k.klight.k')
+           , variables = { "tangle_selector" : ".k .k-light" }
+           )
+
+outerk_k5 = proj.tangle( input = 'outer-k.md'
+                       , output = proj.tangleddir('outer-k.k5.k')
+                       , variables = { "tangle_selector" : ".k .k5" }
+                       )
+
 ekore_def  = proj.kdefinition( 'ekore'
                              , main = proj.tangle('ekore.md', proj.tangleddir('ekore/ekore.k'))
-                             , implicit = [ 'outer-k.k' ]
+                             , implicit = [ outerk_k5 ]
                              , backend = 'java'
                              , alias = 'ekore'
                              , kompile_flags = '-I . --syntax-module EKORE-SYNTAX'
                              )
+
+# Foobar parsing using outer kore
+# ----------------------------
+
+parsed_foobar = ekore_def.krun( output = proj.builddir('foobar/foobar.ekoreMinus1')
+                              , input = 'foobar/foobar.ekoreMinus1'
+                              )
+
+proj.build( inputs = parsed_foobar
+          , rule = 'phony'
+          , outputs = proj.builddir('foobar/foobar.ekoreMinus1.parses')
+          )
 
 # Imp parsing using outer kore
 # ----------------------------
