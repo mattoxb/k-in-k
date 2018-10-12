@@ -120,8 +120,10 @@ outerk_k5 = proj.tangle( input = 'outer-k.md'
                        , variables = { "tangle_selector" : ".k5" }
                        )
 
+# TODO: The k-light parser extracts the name of the main module from the
+# name of the file. Change this behavior to accept name of module to parse using.
 outerk_klight = proj.tangle( input = 'outer-k.md'
-                           , output = proj.tangleddir('outer-k.klight.k')
+                           , output = proj.tangleddir('outer-k.k')
                            , variables = { "tangle_selector" : ".k-light" }
                            )
 
