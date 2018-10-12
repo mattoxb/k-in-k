@@ -138,13 +138,21 @@ ekore_def  = proj.kdefinition( 'ekore'
 # Foobar parsing using outer kore
 # ----------------------------
 
-parsed_foobar = ekore_def.krun( output = proj.builddir('foobar/foobar.ekoreMinus1')
-                              , input = 'foobar/foobar.ekoreMinus1'
+proj.variable( 'kouter_parser'
+             , ( proj.klightbindir('k-light2k5.sh ')
+               + proj.tangleddir('outer-k.k')
+               + ' KDefinition'
+               )
+             )
+
+parsed_foobar = ekore_def.krun( output = proj.builddir('foobar/foobar.ekore0')
+                              , input = 'foobar/foobar.k'
+                              , krun_flags = '--parser "$kouter_parser"'
                               )
 
 proj.build( inputs = parsed_foobar
           , rule = 'phony'
-          , outputs = proj.builddir('foobar/foobar.ekoreMinus1.parses')
+          , outputs = proj.builddir('foobar/foobar.k.parses')
           )
 
 # Imp parsing using outer kore
