@@ -21,6 +21,10 @@ class KProject(ninja.ninja_syntax.Writer):
         return os.path.join('ext', *paths)
     def krepodir(self, *paths):
         return self.extdir('k', *paths)
+    def klightrepodir(self, *paths):
+        return self.extdir('k-light', *paths)
+    def klightbindir(self, *paths):
+        return self.klightrepodir('bin', *paths)
     def kbindir(self, *paths):
         return self.krepodir("k-distribution/target/release/k/bin/", *paths)
     def kninjadir(self, *paths):

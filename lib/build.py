@@ -44,6 +44,26 @@ proj.rule( 'kore-exec'
          )
 proj.build(proj.extdir('kore', '.git'), 'git-submodule-init')
 
+# Buiding k-light
+# ---------------
+proj.build(proj.klightrepodir('.git'), 'git-submodule-init')
+
+
+proj.rule( 'build-klight'
+         , description = 'building k-light'
+         , command     = 'cd $klightrepodir && mvn package -DskipTests'
+         )
+
+# TODO: Figure out how to make dependence on source java files and not pom
+proj.build( inputs    = proj.klightrepodir('pom.xml')
+          , rule      = 'build-klight'
+          , outputs   = proj.klightbindir('k-light2k5.sh')
+          , implicit  = None
+          , variables = { 'klightrepodir' : proj.klightrepodir()
+                        }
+          )
+
+
 # Converting Frontend Definitions
 # -------------------------------
 
