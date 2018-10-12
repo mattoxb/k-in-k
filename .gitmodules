@@ -7,3 +7,7 @@
 [submodule "ext/pandoc-tangle"]
 	path = ext/pandoc-tangle
 	url = https://github.com/ehildenb/pandoc-tangle.git
+[submodule "ext/k-light"]
+	path = ext/k-light
+	url = https://github.com/radumereuta/k-light.git
+	branch = evenLighter
