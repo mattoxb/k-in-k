@@ -1,44 +1,63 @@
-// // Copyright (c) 2015-2018 K Team. All Rights Reserved.
-// // written by Radu Mereuta
-// // This grammar is supposed to accept as input a full K definition
-// // which includes modules, syntax declarations and rules as bubbles.
-//
-```{.k, .k-light}
+// Copyright (c) 2015-2018 K Team. All Rights Reserved.
+// written by Radu Mereuta
+// This grammar is supposed to accept as input a full K definition
+// which includes modules, syntax declarations and rules as bubbles.
+
+```{.k-light .k5}
 module BUBBLE
+```
 
-  syntax Bubble ::= Bubble BubbleItem // [token]
-                   | BubbleItem       //  [token]
+```k5
+  syntax Bubble ::= Bubble BubbleItem
+                   | BubbleItem
   syntax BubbleItem
-//  syntax BubbleItem ::= r"[^ \t\n\r]+" [token, reject2("rule|syntax|endmodule|configuration|context")]
+```
 
+```k-light
+  syntax Bubble ::= Bubble BubbleItem [token]
+                   | BubbleItem       [token]
+
+  syntax BubbleItem ::= r"[^ \t\n\r]+" [token, reject2("rule|syntax|endmodule|configuration|context")]
+```
+
+```{.k-light .k5}
 endmodule
-//
-// module KSTRING
-//   syntax KString ::= r"[\\\"](([^\\\"\n\r\\\\])|([\\\\][nrtf\\\"\\\\])|([\\\\][x][0-9a-fA-F]{2})|([\\\\][u][0-9a-fA-F]{4})|([\\\\][U][0-9a-fA-F]{8}))*[\\\"]"      [token]
-//   // optionally qualified strings, like in Scala "abc", i"abc", r"a*bc", etc.
-// endmodule
-//
+```
+
+```k-light
+module KSTRING
+  syntax KString ::= r"[\\\"](([^\\\"\n\r\\\\])|([\\\\][nrtf\\\"\\\\])|([\\\\][x][0-9a-fA-F]{2})|([\\\\][u][0-9a-fA-F]{4})|([\\\\][U][0-9a-fA-F]{8}))*[\\\"]"      [token]
+  // optionally qualified strings, like in Scala "abc", i"abc", r"a*bc", etc.
+endmodule
+```
+
+```{.k-light .k5}
 module ATTRIBUTES
   imports KSTRING
   syntax KEY        ::= r"[a-z][A-Za-z\\-0-9]*" [token]
   syntax TAGList    ::= TAGCONTENT              [token]
+```
+```k5
   syntax TAGCONTENT
-//  syntax TAGCONTENT ::= TAGCONTENT TC           [symbol(#TAGCONTENTList)] // dummy symbol
-//                      | TC                      [symbol(#TAGCONTENTTC)]   // dummy symbol
-//                      | ""                      [symbol(#NOTAGCONTENT)]   // dummy symbol
-//  syntax TC ::= r"[^\\n\\r\\(\\)\\\"]+"         [symbol('TC)]             // dummy symbol
-//              | "(" TAGCONTENT ")"
-//
+```
+```k-light
+ syntax TAGCONTENT ::= TAGCONTENT TC           [symbol(#TAGCONTENTList)] // dummy symbol
+                     | TC                      [symbol(#TAGCONTENTTC)]   // dummy symbol
+                     | ""                      [symbol(#NOTAGCONTENT)]   // dummy symbol
+ syntax TC ::= r"[^\\n\\r\\(\\)\\\"]+"         [symbol('TC)]             // dummy symbol
+             | "(" TAGCONTENT ")"
+```
+```{.k-light .k5}
   syntax Attr ::= KEY                 [symbol(#TagSimple)]
                 | KEY "(" TAGList ")" [symbol(#TagContent)]
                 | KEY "(" KString ")" [symbol(#TagString)]
 endmodule
-//
+```
+```{.k-light .k5}
 // To be used for first-level parsing/pretty-printing of global KORE
 // definitions, where the K terms are put in bubbles.  A similar, but
 // larger OUTER module can be defined for arbitrary K definitions.
 module SYNTAX-DECL
-// TODO: KSTRING comes from domains.k instead of the module in this file
   imports KSTRING
   imports BUBBLE
   imports ATTRIBUTES
@@ -119,13 +138,19 @@ module SYNTAX-DECL
   syntax KModuleName ::= r"[A-Z][A-Z\\-]*"    [token]
   syntax KSort       ::= r"[A-Z][A-Za-z0-9]*" [token]
 endmodule
+```
 //
 //
+```{.k-light .k5}
 module OUTER-K
   imports SYNTAX-DECL
   imports BUBBLE
-//
-// syntax Layout ::= r"(/\\*([^\\*]|(\\*+([^\\*/])))*\\*+/|//[^\n\r]*|[\\ \n\r\t])*"
-//
+```
+
+```k-light
+  syntax Layout ::= r"(/\\*([^\\*]|(\\*+([^\\*/])))*\\*+/|//[^\n\r]*|[\\ \n\r\t])*"
+```
+
+```{.k-light .k5}
 endmodule
 ```

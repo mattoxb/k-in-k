@@ -7,7 +7,7 @@ constructs. Hence eKore syntax is simply kore syntax + K Frontend
 constructs described using kore.
 
 ```k
-requires "outer-k.k"
+requires "outer-k.k5.k"
 
 module EKORE-SYNTAX
   imports OUTER-K

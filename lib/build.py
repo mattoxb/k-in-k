@@ -115,22 +115,22 @@ proj.default(test)
 # Buliding the eKore transformations
 # ----------------------------------
 
-proj.tangle( input = 'outer-k.md'
-           , output = proj.tangleddir('outer-k.klight.k')
-           , variables = { "tangle_selector" : ".k .k-light" }
-           )
-
 outerk_k5 = proj.tangle( input = 'outer-k.md'
                        , output = proj.tangleddir('outer-k.k5.k')
-                       , variables = { "tangle_selector" : ".k .k5" }
+                       , variables = { "tangle_selector" : ".k5" }
                        )
+
+outerk_klight = proj.tangle( input = 'outer-k.md'
+                           , output = proj.tangleddir('outer-k.klight.k')
+                           , variables = { "tangle_selector" : ".k-light" }
+                           )
 
 ekore_def  = proj.kdefinition( 'ekore'
                              , main = proj.tangle('ekore.md', proj.tangleddir('ekore/ekore.k'))
                              , implicit = [ outerk_k5 ]
                              , backend = 'java'
                              , alias = 'ekore'
-                             , kompile_flags = '-I . --syntax-module EKORE-SYNTAX'
+                             , kompile_flags = '-I ' + proj.tangleddir() + ' --syntax-module EKORE-SYNTAX'
                              )
 
 # Foobar parsing using outer kore
