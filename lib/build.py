@@ -48,7 +48,7 @@ kink = proj.source('kink.md') \
 def foobar_test(file):
     proj.source(file) \
         .then(kink.krun()) \
-        .then(kore_from_config.variables(cell = 'k')) \
+        .then(kore_from_config.variables(cell = 'k').implicit(proj.source('lib/kore-from-config'))) \
         .then(proj.check(proj.source('t/foobar.ekore.expected'))
                      .variables(flags = '--ignore-all-space')) \
         .default()
