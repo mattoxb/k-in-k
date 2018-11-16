@@ -20,7 +20,9 @@ Note the capital "M" in `<Modules>` and `<Module>` to work around parsing issues
                 <Modules>
                   <Module multiplicity="*" type="Map">
                     <name> .K </name>
+                    <found> .K </found>
                     <sorts> .Set </sorts>
+                    <functions> .Set </functions>
                   </Module>
                 </Modules>
 endmodule
@@ -147,6 +149,8 @@ module K-MODULE-TO-KORE-MODULE
                 => <Module>
                     <name> MNAME </name>
                     <sorts> .Set </sorts>
+                    <functions> .Set </functions>
+                    ...
                    </Module>
                  )
         ...
@@ -177,6 +181,8 @@ populate the configuration.
                 => <Module>
                     <name> MNAME </name>
                     <sorts> .Set </sorts>
+                    <functions> .Set </functions>
+                    ...
                    </Module>
                  )
         ...
@@ -293,6 +299,7 @@ to be followed -
            <sorts> SORTS_SET
                 => (SORTS_SET SetItem(sortNameFromProdDecl(DECL)))
            </sorts>
+           ...
           </Module>
        </Modules>
        requires notBool(sortNameFromProdDecl(DECL) in SORTS_SET)
@@ -313,6 +320,7 @@ A sort declaration already exists, ignore:
          <Module>
            <name> MNAME </name>
            <sorts> SORTS_SET </sorts>
+           ...
           </Module>
        </Modules>
        requires sortNameFromProdDecl(DECL) in SORTS_SET
@@ -333,6 +341,72 @@ Ignore other `Declaration`s:
 endmodule
 ```
 
+Collect Function Declarations
+------------------------------------
+
+This transformation translates functions into Kore Axioms.
+
+```k
+module COLLECT-FUNCTIONS
+```
+
+First we import the visitor infrastructure:
+
+```k
+  imports KINK-VISITORS
+```
+
+We then define a visitor and specify its behaviour:
+
+```k
+  syntax Visitor ::= "#collectFunctions"
+```
+
+Now we `#visit`ing a Kore function declarations, we add that function to the list of
+declared functions for that module. Since we want to replace the declaration
+unchanged into the original module, `#visit` "returns" the same function
+declaration.
+
+For this pass, we delete the function declarations.
+
+--                         , sort SORT_NAME { SORT_PARAMS } ATTRS
+-- (symbol FUNCTION_NAME { S_PARAMS } ( F_PARAMS ) : SORT_NAME { S_PARAMS2 } ATTRS
+-- (sort FUNCTION_NAME { S_PARAMS } ATTRS )
+
+```k
+  rule <pipeline> #visit( #collectFunctions
+                        , MNAME
+                        , symbol FUNCTION_NAME { S_PARAMS } ( F_PARAMS ) : SORT_NAME { S_PARAMS2 } ATTRS
+                        )
+              => (symbol FUNCTION_NAME { S_PARAMS } ( F_PARAMS ) : SORT_NAME { S_PARAMS2 } ATTRS .Declarations)
+                 ...
+       </pipeline>
+       <Modules>
+         <Module>
+           <name> MNAME </name>
+           <found> FUNCTION_NAME </found>
+           <functions> ... (.Set => SetItem(FUNCTION_NAME)) ... </functions>
+           ...
+         </Module>
+       </Modules>
+```
+
+Everything else...
+
+```k
+  rule <pipeline> #visit( #collectFunctions
+                        , MNAME
+                        , DECL
+                        )
+              =>  (DECL .Declarations)
+                  ...
+       </pipeline>
+```
+
+```k
+endmodule
+```
+
 Main Module
 ===========
 
@@ -341,11 +415,13 @@ module KINK
   imports K-MODULE-TO-KORE-MODULE
   imports COLLECT-DECLARED-SORTS
   imports EXTRACT-SORTS-FROM-PRODUCTIONS
+  imports COLLECT-FUNCTIONS
 
   rule <pipeline> #initPipeline
                =>    #frontendModulesToKoreModules
                   ~> #visitDefintion(#collectDeclaredSorts)
                   ~> #visitDefintion(#extractSortsFromProductions)
+                  ~> #visitDefintion(#collectFunctions)
                   ...
        </pipeline>
 endmodule
